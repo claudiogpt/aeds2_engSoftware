@@ -48,6 +48,10 @@ class Fila<E> {
     private Celula<E> frente;
     private Celula<E> tras;
 
+    public Celula<E> getFrente() {
+        return frente;
+    }
+
     public Fila() {
         frente = new Celula<E>();
         tras = frente;
@@ -70,6 +74,43 @@ class Fila<E> {
         Celula<E> aux = frente;
         frente = frente.getProximo();
         return frente.getItem();
+    }
+
+    public E consultarPrimeiro() {
+        if (vazia()) {
+            throw new NoSuchElementException("Erro: fila vazia");
+        }
+        return frente.getProximo().getItem();
+    }
+
+    public void imprimir() {
+        Celula<E> aux = frente.getProximo();
+        while (aux != null) {
+            System.out.print(aux.getItem() + " ");
+            aux = aux.getProximo();
+        }
+        System.out.println();
+    }
+
+    private void moverPrimeiro(Celula<E> celula) {
+        //Settar o proximo do anterior para o próximo do atual
+        celula.getAnterior().setProximo(celula.getProximo());
+        //Settar o anterior do proximo para o anterior do atual
+        celula.getProximo().setAnterior(celula.getAnterior());
+        celula.setAnterior(null);
+
+    }
+
+    public void getPrioridade (E item) {
+        Celula<E> atual = this.getFrente();
+        while(atual != null){
+            if(atual.getItem().equals(item)){
+                tras = atual.getAnterior();
+            }
+            this.moverPrimeiro(atual);
+            return;
+        }
+        throw new NoSuchElementException("Elemento não encontrado!");
     }
 }
 
