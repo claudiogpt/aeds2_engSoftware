@@ -93,12 +93,26 @@ class Fila<E> {
     }
 
     private void moverPrimeiro(Celula<E> celula) {
+        // 1 - Remove célula atual da lista
         //Settar o proximo do anterior para o próximo do atual
         celula.getAnterior().setProximo(celula.getProximo());
         //Settar o anterior do proximo para o anterior do atual
         celula.getProximo().setAnterior(celula.getAnterior());
+        // 2 - Remove o anterior para mover para o início
         celula.setAnterior(null);
+        //Tinha errado na prova original, achava que o frente apontava para a célula 0 (em um) 
+        //-- versão da prova original, mas não tem nada na questão apontando o contrários
+        //celula.setProximo(frente);
+        //frente.setAnterior(celula);
+        //frente = celula;
 
+        //Versão corrigida -- falta corrigir o apontamento do anterior do frente.getProximo
+        celula.setProximo(frente.getProximo());
+        //Settando o frente.proximo.anterior -> celula
+        Celula<E> proximoFrente = frente.getProximo();
+        proximoFrente.setAnterior(celula);
+        celula.setAnterior(frente);
+        // Não precisa atualizar o frente(sentinela);
     }
 
     public void getPrioridade (E item) {
