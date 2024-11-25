@@ -1,20 +1,24 @@
 class Celula<T> {
 
 	private final T item;
+	private Celula<T> anterior;
 	private Celula<T> proximo;
 
 	public Celula() {
 		this.item = null;
+		setAnterior(null);
 		setProximo(null);
 	}
 
 	public Celula(T item) {
 		this.item = item;
+		setAnterior(null);
 		setProximo(null);
 	}
 
-	public Celula(T item, Celula<T> proximo) {
+	public Celula(T item, Celula<T> anterior, Celula<T> proximo) {
         this.item = item;
+        this.anterior = anterior;
         this.proximo = proximo;
     }
 	
@@ -22,6 +26,14 @@ class Celula<T> {
 		return item;
 	}
 
+	public Celula<T> getAnterior() {
+		return anterior;
+	}
+
+	public void setAnterior(Celula<T> anterior) {
+		this.anterior = anterior;
+	}
+	
 	public Celula<T> getProximo() {
 		return proximo;
 	}
@@ -30,7 +42,6 @@ class Celula<T> {
 		this.proximo = proximo;
 	}
 }
-
 class Lista<E> {
 
 	private Celula<E> primeiro;
@@ -44,7 +55,33 @@ class Lista<E> {
 		this.primeiro = this.ultimo = sentinela;
 		this.tamanho = 0;
 	}
-	
+
+	//Getters
+	public Celula<E> getPrimeiro() {
+		return primeiro;
+	}
+
+	public Celula<E> getUltimo() {
+		return ultimo;
+	}	
+
+	public int getTamanho() {
+		return tamanho;
+	}
+
+	//Setters
+	public void setPrimeiro(Celula<E> primeiro) {
+		this.primeiro = primeiro;
+	}
+
+	public void setUltimo(Celula<E> ultimo) {
+		this.ultimo = ultimo;
+	}
+
+	public void setTamanho(int tamanho) {
+		this.tamanho = tamanho;
+	}
+
 	public boolean vazia() {
 		
 		return (this.primeiro == this.ultimo);
@@ -108,36 +145,41 @@ class Lista<E> {
 		return (celulaRemovida.getItem());	
 	}
 
-	Lista<E> intercalarListas(Lista<E> l1, Lista<E> l2) {
-		Lista<E> resultado = new Lista<E>();
-		int j = 0;
-		//Enquanto ambas estiverem cheias
-		while (!l1.vazia() && !l2.vazia()) {
-			resultado.inserir(l1.remover(0), j);
-			resultado.inserir(l2.remover(0), j + 1);
-			j+=2;
+	public void mesclarAlternadamente (Lista<E> outraLista) {
+		Lista<E> aux = new Lista<E>();
+
+		Celula<E> atual = this.primeiro;
+		Celula<E> outroAtual = outraLista.getPrimeiro();
+
+		while(!outraLista.vazia()) {
+			if(atual.getProximo() == null) {
+				break;
+			}
+			//O anterior do proximo vai ser o outroAtual
+			atual.getProximo().setAnterior(outroAtual);
+			//O proximo do atual vai ser o outroAtual
+			atual.setProximo(outroAtual);
+			//Percorre na outraLista
+			outroAtual = outroAtual.getProximo();
+			//Percorre na atual ignorando o elemento adicionado
+			atual = atual.getProximo().getProximo();
 		}
-		//Se sobrou l1 preencher
-		while (!l1.vazia()) {
-			resultado.inserir(l1.remover(0), j);
-			j++;
+		ultimo = atual;
+		while(!outraLista.vazia()) {
+			atual.setProximo(outroAtual);
+			outroAtual.setAnterior(atual);
+			atual = atual.getProximo();
 		}
-		//Se sobrou l2 preencher
-		while(!l2.vazia()) {
-			resultado.inserir(l2.remover(0), j);
-			j++;
-		}
-		return resultado;
+		ultimo = atual;
+		atual.setProximo(null);
 	}
+
+
 }
 
-public class Questao5 {
+
+public class Questao4 {
     public static void main(String[] args) {
-        Lista<Integer> list = new Lista<>();
-        list.inserir(10, 1);
-        list.inserir(20, 1);
-        list.inserir(30, 1);
-        list.inserir(40, 1);
-        list.inserir(50, 1);
-    }
+        
+    }   
 }
